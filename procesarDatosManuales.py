@@ -10,6 +10,7 @@ from scipy.optimize import curve_fit
 from matplotlib import pyplot
 import pandas as pd
 from sklearn import linear_model
+from scipy.stats import pearsonr
 
 class Datos:
   datosYeld=[]
@@ -83,7 +84,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id>20")
+mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id<20")
 
 myresult = mycursor.fetchall()
 for x in myresult:
