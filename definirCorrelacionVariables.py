@@ -110,7 +110,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by id desc")
+mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 150 order by id desc")
 
 myresult = mycursor.fetchall()
 
@@ -121,17 +121,17 @@ for x in myresult:
   datos.datosArea.append(float(x[3]))
   datos.datosVolumen.append(float(x[4]))
   datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
-  datos.datosVolumenCalculado.append(obtenerVolumenDesdeAlturaAndDiametro(x))
+  datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
   datos.datosNdvi.append(float(json.loads(x[5])["ndviMean"]))
   datos.datosAltura.append(float(json.loads(x[9])["altura"]))
   print("*****************************************")
   
-corr, _ = pearsonr(datos.datosVolumenCalculado, datos.datosYeld)
-print('Pearsons correlation: %.3f' % corr)
-
+d = {'yields': datos.datosYeld, 'areaImagen': datos.datosArea, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada}
+df = pd.DataFrame(data=d)
+print(df.corr(method="pearson"))
 #pyplot.scatter(datos.datosVolumen, datos.datosVolumenCalculado,c="red")
 #pyplot.scatter(datos.datosArea, datos.datosAreaCalculada,c="red")
 #pyplot.scatter(datos.datosNdvi, datos.datosVolumenCalculado,c="blue")
 #pyplot.scatter(datos.datosAltura, datos.datosNdvi,c="green")
-pyplot.scatter(datos.datosVolumenCalculado,datos.datosYeld,c="black")
+pyplot.scatter(datos.datosVolumenCalculado,datos.datosNdvi,c="black")
 pyplot.show()
