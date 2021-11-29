@@ -15,6 +15,7 @@ from scipy.stats import pearsonr
 class Datos:
   datosYeld=[]
   datosArea=[]
+  datosAreaCalculada=[]
   datosVolumen=[]
   datosVolumenCalculado=[]
   datosNdvi=[]
@@ -25,12 +26,6 @@ def obtenerValoresNormalizadosLista(lista):
    listaR = [element / maxVal for element in lista]
    return listaR
 
-def obtenerVolumenDesdeAltura(planta):
-   altura = float(json.loads(planta[9])["altura"])
-   diametro = float(json.loads(planta[9])["diametro"])
-   volumen = (math.pi/1000000)*((diametro/2)*(diametro/2))*(altura/2)*(4/3)
-   print(volumen)
-   return volumen
 
 def obtenerRendimientoPlanta(planta):
     jsonMeasurement = json.loads(planta[9])
@@ -94,12 +89,18 @@ def obtenerAreaDesdeDiametro(planta):
    diametro = float(json.loads(planta[9])["diametro"])
    area = (math.pi/10000)*((diametro/2)*(diametro/2))
    print("AreaCalc : %.3f " %area)
+   print("AreaDrone : %s " %planta[3])
    return area
 def obtenerVolumenDesdeAltura(planta):
    altura = float(json.loads(planta[9])["altura"])
-   diametro = float(json.loads(planta[9])["diametro"])
    volumen = float(float(planta[3]))*(altura/200)*(4/3)
    print("VolumenCalc : %.3f " %volumen)
+   return volumen
+def obtenerVolumenDesdeAlturaAndDiametro(planta):
+   altura = float(json.loads(planta[9])["altura"])
+   diametro = float(json.loads(planta[9])["diametro"])
+   volumen = (math.pi/1000000)*((diametro/2)*(diametro/2))*(altura/2)*(4/3)
+   print(volumen)
    return volumen
 mydb = mysql.connector.connect(
   host="localhost",
@@ -109,7 +110,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 30 and 150 order by id desc")
+mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by id desc")
 
 myresult = mycursor.fetchall()
 
@@ -119,16 +120,17 @@ for x in myresult:
   datos.datosYeld.append(yieldPlanta)
   datos.datosArea.append(float(x[3]))
   datos.datosVolumen.append(float(x[4]))
-  datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
+  datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
+  datos.datosVolumenCalculado.append(obtenerVolumenDesdeAlturaAndDiametro(x))
   datos.datosNdvi.append(float(json.loads(x[5])["ndviMean"]))
   datos.datosAltura.append(float(json.loads(x[9])["altura"]))
   print("*****************************************")
   
-corr, _ = pearsonr(datos.datosYeld, datos.datosVolumenCalculado)
+corr, _ = pearsonr(datos.datosVolumenCalculado, datos.datosYeld)
 print('Pearsons correlation: %.3f' % corr)
 
 #pyplot.scatter(datos.datosVolumen, datos.datosVolumenCalculado,c="red")
-#pyplot.scatter(datos.datosArea, datos.datosAltura,c="red")
+#pyplot.scatter(datos.datosArea, datos.datosAreaCalculada,c="red")
 #pyplot.scatter(datos.datosNdvi, datos.datosVolumenCalculado,c="blue")
 #pyplot.scatter(datos.datosAltura, datos.datosNdvi,c="green")
 pyplot.scatter(datos.datosVolumenCalculado,datos.datosYeld,c="black")
