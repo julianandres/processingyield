@@ -6,7 +6,6 @@ import numpy as np
 from numpy import sin
 from numpy import sqrt
 from numpy import arange
-from scipy.optimize import curve_fit
 from matplotlib import pyplot
 import pandas as pd
 from sklearn import linear_model
@@ -20,12 +19,12 @@ class Datos:
   datosVolumenCalculado=[]
   datosNdvi=[]
   datosAltura=[]
+  datosAlturaCalculada=[]
 
 def obtenerValoresNormalizadosLista(lista):
    maxVal = max(lista)
    listaR = [element / maxVal for element in lista]
    return listaR
-
 
 def obtenerRendimientoPlanta(planta):
     jsonMeasurement = json.loads(planta[9])
@@ -102,36 +101,38 @@ def obtenerVolumenDesdeAlturaAndDiametro(planta):
    volumen = (math.pi/1000000)*((diametro/2)*(diametro/2))*(altura/2)*(4/3)
    print(volumen)
    return volumen
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="root"
-)
 
-mycursor = mydb.cursor()
+def objective(x, a, b):
+	  return a * np.array(x) + b
+def getDataFromDataBase():
+   mydb = mysql.connector.connect(
+      host="localhost",
+      user="root",
+      password="root"
+   )
+   mycursor = mydb.cursor()
 
-mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 150 order by id desc")
+   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by id desc")
 
-myresult = mycursor.fetchall()
+   myresult = mycursor.fetchall()
+   return myresult
 
-datos = Datos()
-for x in myresult:
-  yieldPlanta= obtenerRendimientoPlanta(x)
-  datos.datosYeld.append(yieldPlanta)
-  datos.datosArea.append(float(x[3]))
-  datos.datosVolumen.append(float(x[4]))
-  datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
-  datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
-  datos.datosNdvi.append(float(json.loads(x[5])["ndviMean"]))
-  datos.datosAltura.append(float(json.loads(x[9])["altura"]))
-  print("*****************************************")
-  
-d = {'yields': datos.datosYeld, 'areaImagen': datos.datosArea, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada}
-df = pd.DataFrame(data=d)
-print(df.corr(method="pearson"))
-#pyplot.scatter(datos.datosVolumen, datos.datosVolumenCalculado,c="red")
-#pyplot.scatter(datos.datosArea, datos.datosAreaCalculada,c="red")
-#pyplot.scatter(datos.datosNdvi, datos.datosVolumenCalculado,c="blue")
-#pyplot.scatter(datos.datosAltura, datos.datosNdvi,c="green")
-pyplot.scatter(datos.datosVolumenCalculado,datos.datosNdvi,c="black")
-pyplot.show()
+
+def generarMatrizDatos(myresult):
+   datos = Datos()
+   for x in myresult:
+      print(x[12])
+      yieldPlanta= obtenerRendimientoPlanta(x)
+      datos.datosAlturaCalculada.append(x[12])
+      datos.datosYeld.append(yieldPlanta)
+      datos.datosArea.append(float(x[3]))
+      datos.datosVolumen.append(float(x[4]))
+      datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
+      datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
+      datos.datosNdvi.append(float(json.loads(x[5])["ndviMean"]))
+      datos.datosAltura.append(float(json.loads(x[9])["altura"]))
+   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada,'areaImagen': datos.datosArea,"alturaCalculada":datos.datosAlturaCalculada,"alturaImagen":datos.datosAltura}
+   df = pd.DataFrame(data=d)
+   print("*****************************************")
+   return df,datos
+   
