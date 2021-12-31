@@ -87,19 +87,24 @@ def obtenerMuestra(population):
 def obtenerAreaDesdeDiametro(planta):
    diametro = float(json.loads(planta[9])["diametro"])
    area = (math.pi/10000)*((diametro/2)*(diametro/2))
-   print("AreaCalc : %.3f " %area)
-   print("AreaDrone : %s " %planta[3])
+   #print("AreaCalc : %.3f " %area)
+   #print("AreaDrone : %s " %planta[3])
    return area
 def obtenerVolumenDesdeAltura(planta):
    altura = float(json.loads(planta[9])["altura"])
-   volumen = float(float(planta[3]))*(altura/200)*(4/3)
+   volumen = float(planta[3])*(altura/200)*(4/3)
    print("VolumenCalc : %.3f " %volumen)
+   return volumen
+def obtenerVolumenDesdeImagen(planta):
+   altura = float(planta[12])
+   volumen = float(planta[3])*(altura/200)*(4/3)
+   print("VolumenImage : %.3f " %volumen)
    return volumen
 def obtenerVolumenDesdeAlturaAndDiametro(planta):
    altura = float(json.loads(planta[9])["altura"])
    diametro = float(json.loads(planta[9])["diametro"])
    volumen = (math.pi/1000000)*((diametro/2)*(diametro/2))*(altura/2)*(4/3)
-   print(volumen)
+   #print(volumen)
    return volumen
 
 def objective(x, a, b):
@@ -120,13 +125,22 @@ def getDataFromDataBase():
 
 def generarMatrizDatos(myresult):
    datos = Datos()
+   datos.datosYeld=[]
+   datos.datosArea=[]
+   datos.datosAreaCalculada=[]
+   datos.datosVolumen=[]
+   datos.datosVolumenCalculado=[]
+   datos.datosNdvi=[]
+   datos.datosAltura=[]
+   datos.datosAlturaCalculada=[]
+   print(len(datos.datosYeld))
    for x in myresult:
       print(x[12])
       yieldPlanta= obtenerRendimientoPlanta(x)
       datos.datosAlturaCalculada.append(x[12])
       datos.datosYeld.append(yieldPlanta)
       datos.datosArea.append(float(x[3]))
-      datos.datosVolumen.append(float(x[4]))
+      datos.datosVolumen.append(obtenerVolumenDesdeImagen(x))
       datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
       datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
       datos.datosNdvi.append(float(json.loads(x[5])["ndviMean"]))
@@ -136,3 +150,11 @@ def generarMatrizDatos(myresult):
    print("*****************************************")
    return df,datos
    
+
+data= getDataFromDataBase()
+dataframe,datos = generarMatrizDatos(data)
+pyplot.scatter(datos.datosVolumenCalculado,datos.datosYeld,c="black")
+pyplot.xlabel("datosVolumenCalculado")
+pyplot.ylabel("datosYield")
+
+pyplot.show()
