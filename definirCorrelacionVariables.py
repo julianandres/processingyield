@@ -3,7 +3,7 @@ import json
 import math
 import numpy as np
 
-from numpy import sin
+from numpy import mat, sin
 from numpy import sqrt
 from numpy import arange
 from matplotlib import pyplot
@@ -15,11 +15,14 @@ class Datos:
   datosYeld=[]
   datosArea=[]
   datosAreaCalculada=[]
-  datosVolumen=[]
+  datosVolumenImagen=[]
   datosVolumenCalculado=[]
   datosNdvi=[]
-  datosAltura=[]
+  datosAlturaMedida=[]
   datosAlturaCalculada=[]
+  datosIafNdvi=[]
+  datosNdviMax=[]
+  datosNdviMin=[]
 
 def obtenerValoresNormalizadosLista(lista):
    maxVal = max(lista)
@@ -106,6 +109,15 @@ def obtenerVolumenDesdeAlturaAndDiametro(planta):
    volumen = (math.pi/1000000)*((diametro/2)*(diametro/2))*(altura/2)*(4/3)
    #print(volumen)
    return volumen
+def obtenerIafFromNDVI(planta):
+   ndviMax = 2*float(json.loads(planta[5])["ndviMax"])
+   ndviMin = float(json.loads(planta[5])["ndviMin"])
+   ndviMean = float(json.loads(planta[5])["ndviMean"])
+   fc = 1-((ndviMax-ndviMean)/((ndviMax-ndviMin)))**(0.9)
+   iaf = -2*math.log(1-fc)
+   #print(volumen)
+   #return (0.515-((math.e)**(-0.515*iaf-0.644)))
+   return iaf
 
 def objective(x, a, b):
 	  return a * np.array(x) + b
@@ -128,11 +140,14 @@ def generarMatrizDatos(myresult):
    datos.datosYeld=[]
    datos.datosArea=[]
    datos.datosAreaCalculada=[]
-   datos.datosVolumen=[]
+   datos.datosVolumenImagen=[]
    datos.datosVolumenCalculado=[]
    datos.datosNdvi=[]
-   datos.datosAltura=[]
+   datos.datosAlturaMedida=[]
    datos.datosAlturaCalculada=[]
+   datos.datosIafNdvi=[]
+   datos.datosNdviMax=[]
+   datos.datosNdviMin=[]
    print(len(datos.datosYeld))
    for x in myresult:
       print(x[12])
@@ -140,12 +155,15 @@ def generarMatrizDatos(myresult):
       datos.datosAlturaCalculada.append(x[12])
       datos.datosYeld.append(yieldPlanta)
       datos.datosArea.append(float(x[3]))
-      datos.datosVolumen.append(obtenerVolumenDesdeImagen(x))
+      datos.datosVolumenImagen.append(obtenerVolumenDesdeImagen(x))
       datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
       datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
-      datos.datosNdvi.append(float(json.loads(x[5])["ndviMean"]))
-      datos.datosAltura.append(float(json.loads(x[9])["altura"]))
-   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada,'areaImagen': datos.datosArea,"alturaCalculada":datos.datosAlturaCalculada,"alturaImagen":datos.datosAltura}
+      datos.datosNdvi.append(float(json.loads(x[5])["ndviMax"]))
+      datos.datosNdviMax.append(float(json.loads(x[5])["ndviMean"]))
+      datos.datosNdviMin.append(float(json.loads(x[5])["ndviMean"]))
+      datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))
+      datos.datosIafNdvi.append(obtenerIafFromNDVI(x))
+   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumenImagen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada,'areaImagen': datos.datosArea,"alturaImagen":datos.datosAlturaCalculada,"alturaMedida":datos.datosAlturaMedida,"datosIafNdvi":datos.datosIafNdvi}
    df = pd.DataFrame(data=d)
    print("*****************************************")
    return df,datos
