@@ -129,7 +129,7 @@ def getDataFromDataBase():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by id desc")
+   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by volumen desc")
 
    myresult = mycursor.fetchall()
    return myresult
