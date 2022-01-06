@@ -113,7 +113,7 @@ def obtenerIafFromNDVI(planta):
    ndviMax = 2*float(json.loads(planta[5])["ndviMax"])
    ndviMin = float(json.loads(planta[5])["ndviMin"])
    ndviMean = float(json.loads(planta[5])["ndviMean"])
-   fc = 1-((ndviMax-ndviMean)/((ndviMax-ndviMin)))**(0.9)
+   fc = 1-((ndviMax-ndviMean)/((ndviMax-ndviMin)))**(0.6)
    iaf = -2*math.log(1-fc)
    #print(volumen)
    #return (0.515-((math.e)**(-0.515*iaf-0.644)))
@@ -129,7 +129,7 @@ def getDataFromDataBase():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by volumen desc")
+   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by RAND() desc")
 
    myresult = mycursor.fetchall()
    return myresult
