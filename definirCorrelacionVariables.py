@@ -129,7 +129,7 @@ def getDataFromDataBase():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130 order by RAND() desc")
+   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130  order by volumen desc")
 
    myresult = mycursor.fetchall()
    return myresult
@@ -148,31 +148,46 @@ def generarMatrizDatos(myresult):
    datos.datosIafNdvi=[]
    datos.datosNdviMax=[]
    datos.datosNdviMin=[]
-   print(len(datos.datosYeld))
+   dataInit={}
    for x in myresult:
-      print(x[12])
+      spectralVars=json.loads(x[5])
+      statisticVars=json.loads(x[11])
       yieldPlanta= obtenerRendimientoPlanta(x)
       datos.datosAlturaCalculada.append(x[12])
       datos.datosYeld.append(yieldPlanta)
       datos.datosArea.append(float(x[3]))
       datos.datosVolumenImagen.append(obtenerVolumenDesdeImagen(x))
       datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
-      datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
-      datos.datosNdvi.append(float(json.loads(x[5])["ndviMax"]))
-      datos.datosNdviMax.append(float(json.loads(x[5])["ndviMean"]))
-      datos.datosNdviMin.append(float(json.loads(x[5])["ndviMean"]))
+      datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))      
+      datos.datosNdvi.append(float(spectralVars["ndviMean"]))
       datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))
       datos.datosIafNdvi.append(obtenerIafFromNDVI(x))
+      for key in statisticVars.keys():
+         if key in dataInit:
+             dataInit[key].append(statisticVars[key])
+         else:
+             dataInit[key]=[statisticVars[key]]
+      for key in spectralVars.keys():
+         if key in dataInit:
+             dataInit[key].append(spectralVars[key])
+         else:
+             dataInit[key]=[spectralVars[key]]
+
+         
+
+
    d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumenImagen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada,'areaImagen': datos.datosArea,"alturaImagen":datos.datosAlturaCalculada,"alturaMedida":datos.datosAlturaMedida,"datosIafNdvi":datos.datosIafNdvi}
+   d.update(dataInit)
    df = pd.DataFrame(data=d)
    print("*****************************************")
-   return df,datos
+   return df,datos,d
    
 
 data= getDataFromDataBase()
-dataframe,datos = generarMatrizDatos(data)
+dataframe,datos,dframe = generarMatrizDatos(data)
+
 pyplot.scatter(datos.datosVolumenCalculado,datos.datosYeld,c="black")
-pyplot.xlabel("datosVolumenCalculado")
+pyplot.xlabel("volumenImagen")
 pyplot.ylabel("datosYield")
 
 pyplot.show()
