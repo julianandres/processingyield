@@ -32,53 +32,58 @@ def obtenerValoresNormalizadosLista(lista):
 def obtenerRendimientoPlanta(planta):
     jsonMeasurement = json.loads(planta[9])
     ########################################## HEADER
-    #print("#################################HEADER")
-    print(planta[0])
-    #print(planta[3])
-    numeroRamasMuestra= obtenerMuestra(jsonMeasurement["numRamasHeader"])
+    ##print("#################################HEADER")
+    ##print("id:"+str(planta[0]))
+    ##print(planta[3])
+    numeroRamasMuestra=5
+    ##print(planta[13])
+    if planta[13]==1 : numeroRamasMuestra= obtenerMuestra(jsonMeasurement["numRamasHeader"])
     
-    #print(numeroRamasMuestra)
+    ##print(jsonMeasurement["numNodesHeader"])
     nodosTotalPorRama= int(jsonMeasurement["numNodesHeader"])/numeroRamasMuestra
     
     jsonMeasurement["nodosPorRamaHeader"]=nodosTotalPorRama
-    #print(nodosPorRama)
-    numeroNodosMuestra= obtenerMuestra(jsonMeasurement["numNodesHeader"])
+    ##print(nodosPorRama)
+    numeroNodosMuestra = 10
+    if planta[13]==1: numeroNodosMuestra= obtenerMuestra(jsonMeasurement["numNodesHeader"])
     
 
-    #print(numeroNodosMuestra)
+    ##print(numeroNodosMuestra)
     cafesTotalesPorNodo= int(jsonMeasurement["numBeansHeader"])/numeroNodosMuestra
-    print("Muestras Ramas %f" % (numeroRamasMuestra))
-    print("Muestras Nodos %f" % (numeroNodosMuestra))
-    print("nodosPorRama %f"% (nodosTotalPorRama))
-    print("cafesPorNodo %f"% (cafesTotalesPorNodo))
+    #print("Muestras Ramas %f" % (numeroRamasMuestra))
+    #print("Muestras Nodos %f" % (numeroNodosMuestra))
+    #print("nodosPorRama %f"% (nodosTotalPorRama))
+    #print("cafesPorNodo %f"% (cafesTotalesPorNodo))
     jsonMeasurement["cafesPorNodoHeader"]=cafesTotalesPorNodo
-    #print(cafesTotalesPorNodo)
+    ##print(cafesTotalesPorNodo)
     cafesTotalesHeader= cafesTotalesPorNodo*nodosTotalPorRama*float(jsonMeasurement["numRamasHeader"])
-    #print(cafesTotalesHeader)
-    print("#################################footer")
+    ##print(cafesTotalesHeader)
+    #print("#################################footer")
     ########################################## FOOOOOTER
-    numeroRamasMuestraFooter= obtenerMuestra(jsonMeasurement["numRamasFooter"])
-    print("Muestras Ramas %f" % (numeroRamasMuestraFooter))
-    #print(numeroRamasMuestraFooter)
+    numeroRamasMuestraFooter=5
+    if planta[13]==1 : numeroRamasMuestraFooter= obtenerMuestra(jsonMeasurement["numRamasFooter"])
+    #print("Muestras Ramas %f" % (numeroRamasMuestraFooter))
+    ##print(numeroRamasMuestraFooter)
     nodosTotalPorRama= int(jsonMeasurement["numNodesFooter"])/numeroRamasMuestraFooter
     jsonMeasurement["nodosPorRamaFooter"]=nodosTotalPorRama
-    #print(nodosPorRama)
-    numeroNodosMuestra= obtenerMuestra(jsonMeasurement["numNodesFooter"])
-    print("Muestras Nodos %f" % (numeroNodosMuestra))
-    #print(numeroNodosMuestra)
+    ##print(nodosPorRama)
+    numeroNodosMuestra=10
+    if planta[13]==1 : numeroNodosMuestra= obtenerMuestra(jsonMeasurement["numNodesFooter"])
+    #print("Muestras Nodos %f" % (numeroNodosMuestra))
+    ##print(numeroNodosMuestra)
     cafesTotalesPorNodo= int(jsonMeasurement["numBeansFooter"])/numeroNodosMuestra
     jsonMeasurement["cafesPorNodoFooter"]=cafesTotalesPorNodo
-    #print(cafesTotalesPorNodo)
+    ##print(cafesTotalesPorNodo)
     cafesTotalesFooter= cafesTotalesPorNodo*nodosTotalPorRama*float(jsonMeasurement["numRamasFooter"])
-    print("nodosPorRama %f"% (nodosTotalPorRama))
-    print("cafesPorNodo %f"% (cafesTotalesPorNodo))
-    #print(cafesTotalesFooter)
+    #print("nodosPorRama %f"% (nodosTotalPorRama))
+    #print("cafesPorNodo %f"% (cafesTotalesPorNodo))
+    ##print(cafesTotalesFooter)
     total=cafesTotalesFooter+cafesTotalesHeader
-    print("Total %f"%total)
+    #print("Total %f"%total)
     
     return total
    
-    #print(cafesTotalesFooter)
+    ##print(cafesTotalesFooter)
 def obtenerMuestra(population):
      population = float(population)
      valueZ=1.28
@@ -90,24 +95,24 @@ def obtenerMuestra(population):
 def obtenerAreaDesdeDiametro(planta):
    diametro = float(json.loads(planta[9])["diametro"])
    area = (math.pi/10000)*((diametro/2)*(diametro/2))
-   #print("AreaCalc : %.3f " %area)
-   #print("AreaDrone : %s " %planta[3])
+   ##print("AreaCalc : %.3f " %area)
+   ##print("AreaDrone : %s " %planta[3])
    return area
 def obtenerVolumenDesdeAltura(planta):
    altura = float(json.loads(planta[9])["altura"])
    volumen = float(planta[3])*(altura/200)*(4/3)
-   print("VolumenCalc : %.3f " %volumen)
+   #print("VolumenCalc : %.3f " %volumen)
    return volumen
 def obtenerVolumenDesdeImagen(planta):
    altura = float(planta[12])
    volumen = float(planta[3])*(altura/200)*(4/3)
-   print("VolumenImage : %.3f " %volumen)
+   #print("VolumenImage : %.3f " %volumen)
    return volumen
 def obtenerVolumenDesdeAlturaAndDiametro(planta):
    altura = float(json.loads(planta[9])["altura"])
    diametro = float(json.loads(planta[9])["diametro"])
    volumen = (math.pi/1000000)*((diametro/2)*(diametro/2))*(altura/2)*(4/3)
-   #print(volumen)
+   ##print(volumen)
    return volumen
 def obtenerIafFromNDVI(planta):
    ndviMax = 2*float(json.loads(planta[5])["ndviMax"])
@@ -115,7 +120,7 @@ def obtenerIafFromNDVI(planta):
    ndviMean = float(json.loads(planta[5])["ndviMean"])
    fc = 1-((ndviMax-ndviMean)/((ndviMax-ndviMin)))**(0.6)
    iaf = -2*math.log(1-fc)
-   #print(volumen)
+   ##print(volumen)
    #return (0.515-((math.e)**(-0.515*iaf-0.644)))
    return iaf
 
@@ -129,7 +134,7 @@ def getDataFromDataBase():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant where id between 0 and 130  order by volumen desc")
+   mycursor.execute("SELECT * FROM suite2_all_antiguo.plant order by volumen desc")
 
    myresult = mycursor.fetchall()
    return myresult
@@ -163,10 +168,11 @@ def generarMatrizDatos(myresult):
       datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))
       datos.datosIafNdvi.append(obtenerIafFromNDVI(x))
       for key in statisticVars.keys():
-         if key in dataInit:
-             dataInit[key].append(statisticVars[key])
-         else:
-             dataInit[key]=[statisticVars[key]]
+         if key != "maxHistRedIndexValue":   
+            if key in dataInit:
+               dataInit[key].append(statisticVars[key])
+            else:
+               dataInit[key]=[statisticVars[key]]
       for key in spectralVars.keys():
          if key in dataInit:
              dataInit[key].append(spectralVars[key])
@@ -176,18 +182,19 @@ def generarMatrizDatos(myresult):
          
 
 
-   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volumenImagen":datos.datosVolumenImagen,"volumenCalculado":datos.datosVolumenCalculado,"areaCalculada":datos.datosAreaCalculada,'areaImagen': datos.datosArea,"alturaImagen":datos.datosAlturaCalculada,"alturaMedida":datos.datosAlturaMedida,"datosIafNdvi":datos.datosIafNdvi}
+   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
+   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
    d.update(dataInit)
    df = pd.DataFrame(data=d)
-   print("*****************************************")
+   #print("*****************************************")
    return df,datos,d
    
 
-data= getDataFromDataBase()
-dataframe,datos,dframe = generarMatrizDatos(data)
+#data= getDataFromDataBase()
+#dataframe,datos,dframe = generarMatrizDatos(data)
 
-pyplot.scatter(datos.datosVolumenCalculado,datos.datosYeld,c="black")
-pyplot.xlabel("volumenImagen")
-pyplot.ylabel("datosYield")
+#pyplot.scatter(dataframe["volImage"],datos.datosYeld,c="black",s=1)
+#pyplot.xlabel("volImage")
+#pyplot.ylabel("datosYield")
 
-pyplot.show()
+#pyplot.show()
