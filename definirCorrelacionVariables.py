@@ -138,9 +138,21 @@ def getDataFromDataBase():
 
    myresult = mycursor.fetchall()
    return myresult
+def getDataFromDataBaseTest():
+   mydb = mysql.connector.connect(
+      host="localhost",
+      user="root",
+      password="root"
+   )
+   mycursor = mydb.cursor()
+
+   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura is not null AND p.cod_lote=1 AND p.id<17090 AND p.id>6655")
+
+   myresult = mycursor.fetchall()
+   return myresult
 
 
-def generarMatrizDatos(myresult):
+def generarMatrizDatos(myresult,includeYield):
    datos = Datos()
    datos.datosYeld=[]
    datos.datosArea=[]
@@ -157,15 +169,17 @@ def generarMatrizDatos(myresult):
    for x in myresult:
       spectralVars=json.loads(x[5])
       statisticVars=json.loads(x[11])
-      yieldPlanta= obtenerRendimientoPlanta(x)
-      datos.datosAlturaCalculada.append(x[12])
-      datos.datosYeld.append(yieldPlanta)
+      if includeYield :
+         yieldPlanta= obtenerRendimientoPlanta(x)
+         datos.datosYeld.append(yieldPlanta)
+      datos.datosAlturaCalculada.append(x[12])      
       datos.datosArea.append(float(x[3]))
       datos.datosVolumenImagen.append(obtenerVolumenDesdeImagen(x))
-      datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
-      datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))      
+      if includeYield :
+         datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
+         datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
+         datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))      
       datos.datosNdvi.append(float(spectralVars["ndviMean"]))
-      datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))
       datos.datosIafNdvi.append(obtenerIafFromNDVI(x))
       for key in statisticVars.keys():
          if key != "maxHistRedIndexValue":   
@@ -181,9 +195,10 @@ def generarMatrizDatos(myresult):
 
          
 
-
-   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
-   d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
+   if includeYield :
+      d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
+   else:
+      d = {"ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    d.update(dataInit)
    df = pd.DataFrame(data=d)
    #print("*****************************************")
