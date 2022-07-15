@@ -106,7 +106,8 @@ def obtenerVolumenDesdeAltura(planta):
 def obtenerVolumenDesdeImagen(planta):
    altura = float(planta[12])
    volumen = float(planta[3])*(altura/200)*(4/3)
-   #print("VolumenImage : %.3f " %volumen)
+   print("VolumenImage : %.3f " %volumen)
+   print("altura : %.3f " %altura)
    return volumen
 def obtenerVolumenDesdeAlturaAndDiametro(planta):
    altura = float(json.loads(planta[9])["altura"])
@@ -146,7 +147,7 @@ def getDataFromDataBaseTest():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura is not null AND p.cod_lote=1 AND p.id<17090 AND p.id>6655")
+   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura>0 AND p.altura is not null AND p.cod_lote=5 AND p.id<17090 AND p.id>290")
 
    myresult = mycursor.fetchall()
    return myresult
