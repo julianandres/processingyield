@@ -106,8 +106,8 @@ def obtenerVolumenDesdeAltura(planta):
 def obtenerVolumenDesdeImagen(planta):
    altura = float(planta[12])
    volumen = float(planta[3])*(altura/200)*(4/3)
-   print("VolumenImage : %.3f " %volumen)
-   print("altura : %.3f " %altura)
+   #print("VolumenImage : %.3f " %volumen)
+   #print("altura : %.3f " %altura)
    return volumen
 def obtenerVolumenDesdeAlturaAndDiametro(planta):
    altura = float(json.loads(planta[9])["altura"])
@@ -147,7 +147,7 @@ def getDataFromDataBaseTest():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura>0 AND p.altura is not null AND p.cod_lote=5 AND p.id<17090 AND p.id>290")
+   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura>0 AND p.altura is not null AND p.cod_lote=1 AND p.id<17090 AND p.id>291")
 
    myresult = mycursor.fetchall()
    return myresult
@@ -155,31 +155,31 @@ def getDataFromDataBaseTest():
 
 def generarMatrizDatos(myresult,includeYield):
    datos = Datos()
-   datos.datosYeld=[]
    datos.datosArea=[]
    datos.datosAreaCalculada=[]
    datos.datosVolumenImagen=[]
-   datos.datosVolumenCalculado=[]
    datos.datosNdvi=[]
-   datos.datosAlturaMedida=[]
    datos.datosAlturaCalculada=[]
+   if includeYield:
+      datos.datosAlturaMedida=[]
+      datos.datosVolumenCalculado=[]
+      datos.datosYeld=[]
    datos.datosIafNdvi=[]
    datos.datosNdviMax=[]
    datos.datosNdviMin=[]
    dataInit={}
    for x in myresult:
       spectralVars=json.loads(x[5])
-      statisticVars=json.loads(x[11])
-      if includeYield :
-         yieldPlanta= obtenerRendimientoPlanta(x)
-         datos.datosYeld.append(yieldPlanta)
+      statisticVars=json.loads(x[11])         
       datos.datosAlturaCalculada.append(x[12])      
       datos.datosArea.append(float(x[3]))
       datos.datosVolumenImagen.append(obtenerVolumenDesdeImagen(x))
       if includeYield :
          datos.datosAreaCalculada.append(obtenerAreaDesdeDiametro(x))
          datos.datosVolumenCalculado.append(obtenerVolumenDesdeAltura(x))
-         datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))      
+         datos.datosAlturaMedida.append(float(json.loads(x[9])["altura"]))
+         yieldPlanta= obtenerRendimientoPlanta(x)
+         datos.datosYeld.append(yieldPlanta)      
       datos.datosNdvi.append(float(spectralVars["ndviMean"]))
       datos.datosIafNdvi.append(obtenerIafFromNDVI(x))
       for key in statisticVars.keys():
@@ -194,13 +194,17 @@ def generarMatrizDatos(myresult,includeYield):
          else:
              dataInit[key]=[spectralVars[key]]
 
-         
-
+      
    if includeYield :
       d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
    else:
       d = {"ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
+   
    d.update(dataInit)
+   print(len(d["hImage"]))
+   if not includeYield:
+      for key in d.keys():
+         print ("key ",key,"len ",len(d[key]))
    df = pd.DataFrame(data=d)
    #print("*****************************************")
    return df,datos,d
@@ -214,3 +218,5 @@ def generarMatrizDatos(myresult,includeYield):
 #pyplot.ylabel("datosYield")
 
 #pyplot.show()
+data= getDataFromDataBaseTest()
+dataframeTest,datosTest,dictGeneralTest = generarMatrizDatos(data,False)
