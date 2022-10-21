@@ -33,7 +33,7 @@ def obtenerRendimientoPlanta(planta):
     jsonMeasurement = json.loads(planta[9])
     ########################################## HEADER
     ##print("#################################HEADER")
-    ##print("id:"+str(planta[0]))
+    #print("id:"+str(planta[0]))
     ##print(planta[3])
     numeroRamasMuestra=5
     ##print(planta[13])
@@ -196,7 +196,7 @@ def generarMatrizDatos(myresult,includeYield):
 
       
    if includeYield :
-      d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"hMed":datos.datosAlturaMedida,"dataIafNdvi":datos.datosIafNdvi}
+      d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    else:
       d = {"ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    
