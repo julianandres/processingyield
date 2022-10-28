@@ -196,7 +196,7 @@ def generarMatrizDatos(myresult,includeYield):
 
       
    if includeYield :
-      d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"volCalc":datos.datosVolumenCalculado,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
+      d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hMeasured":datos.datosAlturaMedida,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    else:
       d = {"ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    
