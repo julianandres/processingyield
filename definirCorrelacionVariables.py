@@ -147,7 +147,7 @@ def getDataFromDataBaseTest():
    )
    mycursor = mydb.cursor()
 
-   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura>0 AND p.altura is not null AND p.cod_lote=1 AND p.id<17090 AND p.id>291")
+   mycursor.execute("SELECT * FROM suite2.plant p WHERE p.altura>0 AND p.altura is not null AND p.cod_lote=5 AND p.id<17090 AND p.id>291")
 
    myresult = mycursor.fetchall()
    return myresult
@@ -196,7 +196,7 @@ def generarMatrizDatos(myresult,includeYield):
 
       
    if includeYield :
-      d = {'yields': datos.datosYeld, "ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hMeasured":datos.datosAlturaMedida,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
+      d = {'yields': datos.datosYeld,  "volImage":datos.datosVolumenImagen,"areaCalc":datos.datosAreaCalculada,'areaImage': datos.datosArea,"hMeasured":datos.datosAlturaMedida,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    else:
       d = {"ndvi":datos.datosNdvi, "volImage":datos.datosVolumenImagen,'areaImage': datos.datosArea,"hImage":datos.datosAlturaCalculada,"dataIafNdvi":datos.datosIafNdvi}
    

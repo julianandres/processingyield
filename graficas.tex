@@ -1,0 +1,1065 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{graficas}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    1 OBTENCIÓN DE DATOS
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{definirCorrelacionVariables}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib} \PY{k+kn}{import} \PY{n}{pyplot}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{r2\PYZus{}score}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{curve\PYZus{}fit}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pylab} \PY{k}{as} \PY{n+nn}{pl}
+
+\PY{n}{data}\PY{o}{=} \PY{n}{definirCorrelacionVariables}\PY{o}{.}\PY{n}{getDataFromDataBase}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+716
+key  ndvi len  716
+key  volImage len  716
+key  areaImage len  716
+key  hImage len  716
+key  dataIafNdvi len  716
+key  maxRed len  716
+key  minRed len  716
+key  maxBlue len  716
+key  meanRed len  716
+key  minBlue len  716
+key  maxGreen len  716
+key  meanBlue len  716
+key  minGreen len  716
+key  meanGreen len  716
+key  varianceRed len  716
+key  maxHistGrVal len  716
+key  maxHistValue len  716
+key  varianceBlue len  716
+key  maxHistBluVal len  716
+key  varianceGreen len  716
+key  criMean len  716
+key  criMax len  716
+key  criMin len  716
+key  cgreenviMean len  716
+key  cgreenviMax len  716
+key  cgreenviMin len  716
+key  cnirviMean len  716
+key  cnirviMax len  716
+key  cnirviMin len  716
+key  gndviMean len  716
+key  gndviMax len  716
+key  gndviMin len  716
+key  mcariOneMean len  716
+key  mcariOneMax len  716
+key  mcariOneMin len  716
+key  mtviOneMean len  716
+key  mtviOneMax len  716
+key  mtviOneMin len  716
+key  ngrdiMean len  716
+key  ngrdiMax len  716
+key  ngrdiMin len  716
+key  ndviMean len  716
+key  ndviMax len  716
+key  ndviMin len  716
+key  rviMean len  716
+key  rviMax len  716
+key  rviMin len  716
+key  nrviMean len  716
+key  nrviMax len  716
+key  nrviMin len  716
+key  tviMean len  716
+key  tviMax len  716
+key  tviMin len  716
+key  saviMean len  716
+key  saviMax len  716
+key  saviMin len  716
+    \end{Verbatim}
+
+    2 pre PROCESAMIENTO DE DATA
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{dataframe}\PY{p}{,}\PY{n}{datos}\PY{p}{,}\PY{n}{dictGeneral} \PY{o}{=} \PY{n}{definirCorrelacionVariables}\PY{o}{.}\PY{n}{generarMatrizDatos}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+373
+    \end{Verbatim}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  OBTENCIÓN DE CORRELACIÓN MÚLTIPLE
+\end{enumerate}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{datos}\PY{o}{.}\PY{n}{datosYeld}\PY{p}{)}\PY{p}{)}
+\PY{n}{correlation}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+\PY{n}{correlation}\PY{o}{=}\PY{n}{dataframe}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pearson}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{font\PYZus{}scale}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{corr\PYZus{}mat} \PY{o}{=} \PY{n}{dataframe}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{stack}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{name}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{correlation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{g} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{relplot}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{corr\PYZus{}mat}\PY{p}{,}
+    \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{level\PYZus{}0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{level\PYZus{}1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{correlation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{correlation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{vlag}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue\PYZus{}norm}\PY{o}{=}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.7}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{sizes}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{150}\PY{p}{)}\PY{p}{,} \PY{n}{size\PYZus{}norm}\PY{o}{=}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{.2}\PY{p}{,} \PY{l+m+mf}{.8}\PY{p}{)}\PY{p}{,}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Tweak the figure to finalize}
+\PY{n}{g}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{xlabel}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ylabel}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{aspect}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{equal}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{g}\PY{o}{.}\PY{n}{despine}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{g}\PY{o}{.}\PY{n}{ax}\PY{o}{.}\PY{n}{margins}\PY{p}{(}\PY{l+m+mf}{.02}\PY{p}{)}
+\PY{k}{for} \PY{n}{label} \PY{o+ow}{in} \PY{n}{g}\PY{o}{.}\PY{n}{ax}\PY{o}{.}\PY{n}{get\PYZus{}xticklabels}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{label}\PY{o}{.}\PY{n}{set\PYZus{}rotation}\PY{p}{(}\PY{l+m+mi}{90}\PY{p}{)}
+\PY{k}{for} \PY{n}{artist} \PY{o+ow}{in} \PY{n}{g}\PY{o}{.}\PY{n}{legend}\PY{o}{.}\PY{n}{legendHandles}\PY{p}{:}
+    \PY{n}{artist}\PY{o}{.}\PY{n}{set\PYZus{}edgecolor}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.7}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+373
+                 yields  volImage  areaCalc  areaImage  hMeasured    hImage  \textbackslash{}
+yields         1.000000  0.706488  0.516795   0.644988   0.576524  0.504954
+volImage       0.706488  1.000000  0.637683   0.951090   0.694521  0.685404
+areaCalc       0.516795  0.637683  1.000000   0.640605   0.599895  0.391148
+areaImage      0.644988  0.951090  0.640605   1.000000   0.599245  0.451072
+hMeasured      0.576524  0.694521  0.599895   0.599245   1.000000  0.685206
+hImage         0.504954  0.685404  0.391148   0.451072   0.685206  1.000000
+dataIafNdvi    0.533571  0.518569  0.374849   0.459096   0.407755  0.393248
+maxRed         0.648260  0.617897  0.439392   0.614893   0.450213  0.352587
+minRed        -0.014793 -0.248836 -0.207623  -0.222953  -0.242124 -0.205839
+maxBlue        0.639422  0.611173  0.424433   0.631195   0.413651  0.302320
+meanRed        0.568315  0.511285  0.374242   0.546081   0.325742  0.210284
+minBlue        0.258619  0.074037  0.078627   0.116966   0.024315 -0.054827
+maxGreen       0.608750  0.588121  0.454303   0.571543   0.453430  0.355441
+meanBlue       0.561063  0.496284  0.388221   0.543189   0.331680  0.185066
+minGreen      -0.354459 -0.450765 -0.373013  -0.475643  -0.389258 -0.243898
+meanGreen      0.282633  0.215677  0.179111   0.198597   0.064411  0.101376
+varianceRed    0.585009  0.616862  0.417221   0.618599   0.449565  0.340607
+maxHistGrVal   0.500450  0.506140  0.414710   0.539997   0.335815  0.228103
+maxHistValue   0.481911  0.502416  0.371699   0.544779   0.302791  0.214720
+varianceBlue   0.595312  0.621983  0.469040   0.588739   0.484676  0.401489
+maxHistBluVal  0.500450  0.506140  0.414710   0.539997   0.335815  0.228103
+varianceGreen  0.116835  0.238212  0.123720   0.213861   0.136627  0.187122
+criMean       -0.243393 -0.195819 -0.086069  -0.206289  -0.143002 -0.094296
+criMax         0.627835  0.618092  0.432474   0.593933   0.472245  0.395021
+criMin        -0.449140 -0.610451 -0.474162  -0.618689  -0.452885 -0.334713
+cgreenviMean  -0.213677 -0.217827 -0.198024  -0.241522  -0.187691 -0.066830
+cgreenviMax    0.602109  0.603749  0.471182   0.597128   0.500294  0.359730
+cgreenviMin   -0.362578 -0.449135 -0.378215  -0.473988  -0.383431 -0.238709
+cnirviMean    -0.045674  0.012101  0.065237   0.035139  -0.007014 -0.030564
+cnirviMax     -0.132560 -0.038772 -0.136096  -0.108023  -0.025754  0.113183
+cnirviMin     -0.156921 -0.363052 -0.253303  -0.345928  -0.269864 -0.254015
+gndviMean      0.388043  0.400140  0.310126   0.462936   0.352487  0.150817
+gndviMax       0.374909  0.465038  0.380274   0.496567   0.381888  0.239760
+gndviMin      -0.423421 -0.448219 -0.337415  -0.394767  -0.351179 -0.341731
+mcariOneMean   0.532870  0.458817  0.382561   0.508026   0.307912  0.157479
+mcariOneMax    0.558316  0.553387  0.438883   0.584467   0.356632  0.235173
+mcariOneMin    0.318754  0.144667  0.121971   0.184894   0.077621 -0.011208
+mtviOneMean    0.532870  0.458817  0.382561   0.508026   0.307912  0.157479
+mtviOneMax     0.558316  0.553387  0.438883   0.584467   0.356632  0.235173
+mtviOneMin     0.318754  0.144667  0.121971   0.184894   0.077621 -0.011208
+ngrdiMean     -0.336452 -0.367138 -0.251660  -0.417700  -0.331621 -0.158294
+ngrdiMax       0.202052  0.261850  0.189765   0.219182   0.201680  0.237226
+ngrdiMin      -0.379322 -0.468872 -0.380789  -0.494198  -0.400009 -0.256734
+ndviMean       0.493291  0.398165  0.328794   0.415577   0.304511  0.164466
+ndviMax        0.553628  0.595277  0.488917   0.616811   0.441477  0.267314
+ndviMin       -0.390223 -0.450886 -0.305242  -0.376861  -0.350837 -0.387827
+rviMean        0.429298  0.369293  0.351425   0.433160   0.290934  0.098182
+rviMax         0.476436  0.556777  0.457439   0.580410   0.395707  0.246969
+rviMin        -0.360637 -0.417020 -0.285231  -0.343449  -0.333622 -0.371051
+nrviMean       0.410937  0.356848  0.346962   0.422801   0.285573  0.089564
+nrviMax        0.485717  0.564715  0.475409   0.598700   0.411079  0.236289
+nrviMin       -0.390223 -0.450886 -0.305242  -0.376861  -0.350837 -0.387827
+tviMean        0.408457  0.354927  0.346089   0.421096   0.284740  0.088351
+tviMax         0.485434  0.564483  0.475942   0.599061   0.411438  0.235290
+tviMin        -0.394900 -0.456412 -0.308389  -0.382302  -0.353547 -0.390566
+saviMean       0.414607  0.360057  0.348563   0.425907   0.286899  0.091275
+saviMax        0.488531  0.565286  0.475620   0.599345   0.410777  0.236621
+saviMin       -0.384771 -0.447789 -0.302094  -0.372986  -0.348904 -0.387881
+
+               dataIafNdvi    maxRed    minRed   maxBlue  {\ldots}    rviMin  \textbackslash{}
+yields            0.533571  0.648260 -0.014793  0.639422  {\ldots} -0.360637
+volImage          0.518569  0.617897 -0.248836  0.611173  {\ldots} -0.417020
+areaCalc          0.374849  0.439392 -0.207623  0.424433  {\ldots} -0.285231
+areaImage         0.459096  0.614893 -0.222953  0.631195  {\ldots} -0.343449
+hMeasured         0.407755  0.450213 -0.242124  0.413651  {\ldots} -0.333622
+hImage            0.393248  0.352587 -0.205839  0.302320  {\ldots} -0.371051
+dataIafNdvi       1.000000  0.672623 -0.042969  0.510666  {\ldots} -0.841825
+maxRed            0.672623  1.000000  0.118581  0.922024  {\ldots} -0.500522
+minRed           -0.042969  0.118581  1.000000  0.145638  {\ldots}  0.354905
+maxBlue           0.510666  0.922024  0.145638  1.000000  {\ldots} -0.302448
+meanRed           0.435696  0.872927  0.270770  0.933504  {\ldots} -0.200267
+minBlue           0.137277  0.481355  0.769705  0.499798  {\ldots}  0.239100
+maxGreen          0.669453  0.928433  0.054357  0.816803  {\ldots} -0.542819
+meanBlue          0.416638  0.846340  0.351829  0.911340  {\ldots} -0.100763
+minGreen         -0.260714 -0.415600  0.218284 -0.457462  {\ldots}  0.214313
+meanGreen         0.319973  0.510846  0.088861  0.482311  {\ldots} -0.302710
+varianceRed       0.474581  0.808110 -0.223801  0.859809  {\ldots} -0.438966
+maxHistGrVal      0.381546  0.768492  0.155169  0.811368  {\ldots} -0.193757
+maxHistValue      0.420221  0.724059  0.111024  0.790718  {\ldots} -0.184901
+varianceBlue      0.553687  0.804320 -0.198810  0.765485  {\ldots} -0.535417
+maxHistBluVal     0.381546  0.768492  0.155169  0.811368  {\ldots} -0.193757
+varianceGreen     0.154959  0.084429 -0.664309  0.157078  {\ldots} -0.416044
+criMean          -0.091169 -0.359076 -0.112829 -0.430671  {\ldots}  0.008474
+criMax            0.741288  0.949217 -0.010134  0.807356  {\ldots} -0.613114
+criMin           -0.379477 -0.574213  0.660008 -0.601536  {\ldots}  0.458230
+cgreenviMean     -0.039944 -0.223444 -0.025807 -0.278903  {\ldots} -0.042504
+cgreenviMax       0.660232  0.896002  0.019950  0.779909  {\ldots} -0.517868
+cgreenviMin      -0.276401 -0.442939  0.207489 -0.484910  {\ldots}  0.227567
+cnirviMean       -0.013845 -0.053553  0.046392 -0.109216  {\ldots}  0.057483
+cnirviMax        -0.051003 -0.269498 -0.516363 -0.268633  {\ldots} -0.295823
+cnirviMin        -0.202341 -0.106188  0.777140 -0.143235  {\ldots}  0.443225
+gndviMean         0.204427  0.500271  0.243083  0.591570  {\ldots}  0.112558
+gndviMax          0.274560  0.456004 -0.183354  0.504009  {\ldots} -0.203990
+gndviMin         -0.661735 -0.633049  0.198294 -0.467670  {\ldots}  0.721011
+mcariOneMean      0.401038  0.803566  0.394121  0.860155  {\ldots} -0.050362
+mcariOneMax       0.439856  0.772569  0.199517  0.831546  {\ldots} -0.199378
+mcariOneMin       0.171881  0.550114  0.716904  0.568216  {\ldots}  0.208142
+mtviOneMean       0.401038  0.803566  0.394121  0.860155  {\ldots} -0.050362
+mtviOneMax        0.439856  0.772569  0.199517  0.831546  {\ldots} -0.199378
+mtviOneMin        0.171881  0.550114  0.716904  0.568216  {\ldots}  0.208142
+ngrdiMean        -0.158032 -0.412669 -0.123135 -0.502108  {\ldots} -0.057816
+ngrdiMax          0.344980  0.295200 -0.294135  0.178554  {\ldots} -0.489019
+ngrdiMin         -0.274111 -0.445507  0.189641 -0.493729  {\ldots}  0.214989
+ndviMean          0.429618  0.526981  0.377154  0.566231  {\ldots}  0.080649
+ndviMax           0.393439  0.680015 -0.140687  0.697315  {\ldots} -0.255134
+ndviMin          -0.851850 -0.538476  0.349334 -0.347743  {\ldots}  0.995615
+rviMean           0.292033  0.610354  0.432605  0.666171  {\ldots}  0.133356
+rviMax            0.297254  0.604898 -0.253506  0.619195  {\ldots} -0.259832
+rviMin           -0.841825 -0.500522  0.354905 -0.302448  {\ldots}  1.000000
+nrviMean          0.275036  0.585980  0.432556  0.642032  {\ldots}  0.153748
+nrviMax           0.307297  0.641277 -0.220152  0.660755  {\ldots} -0.250778
+nrviMin          -0.851850 -0.538476  0.349334 -0.347743  {\ldots}  0.995615
+tviMean           0.272602  0.582583  0.432804  0.638621  {\ldots}  0.156566
+tviMax            0.307556  0.642434 -0.218204  0.662208  {\ldots} -0.249933
+tviMin           -0.852636 -0.544314  0.348510 -0.354950  {\ldots}  0.994010
+saviMean          0.278286  0.592163  0.432647  0.648555  {\ldots}  0.149792
+saviMax           0.309143  0.645151 -0.210909  0.665352  {\ldots} -0.249269
+saviMin          -0.846940 -0.528292  0.359281 -0.337829  {\ldots}  0.995912
+
+               nrviMean   nrviMax   nrviMin   tviMean    tviMax    tviMin  \textbackslash{}
+yields         0.410937  0.485717 -0.390223  0.408457  0.485434 -0.394900
+volImage       0.356848  0.564715 -0.450886  0.354927  0.564483 -0.456412
+areaCalc       0.346962  0.475409 -0.305242  0.346089  0.475942 -0.308389
+areaImage      0.422801  0.598700 -0.376861  0.421096  0.599061 -0.382302
+hMeasured      0.285573  0.411079 -0.350837  0.284740  0.411438 -0.353547
+hImage         0.089564  0.236289 -0.387827  0.088351  0.235290 -0.390566
+dataIafNdvi    0.275036  0.307297 -0.851850  0.272602  0.307556 -0.852636
+maxRed         0.585980  0.641277 -0.538476  0.582583  0.642434 -0.544314
+minRed         0.432556 -0.220152  0.349334  0.432804 -0.218204  0.348510
+maxBlue        0.642032  0.660755 -0.347743  0.638621  0.662208 -0.354950
+meanRed        0.679932  0.616472 -0.245366  0.677033  0.617874 -0.252525
+minBlue        0.786980  0.294730  0.214636  0.786281  0.295988  0.210558
+maxGreen       0.523001  0.648719 -0.575418  0.519705  0.649838 -0.580308
+meanBlue       0.830079  0.640755 -0.146367  0.827734  0.642584 -0.153695
+minGreen      -0.331503 -0.522541  0.224291 -0.331129 -0.525061  0.225826
+meanGreen      0.206374  0.364352 -0.325467  0.203613  0.364643 -0.328744
+varianceRed    0.340236  0.631120 -0.480953  0.336798  0.631890 -0.487662
+maxHistGrVal   0.590637  0.550369 -0.230232  0.588520  0.551371 -0.235905
+maxHistValue   0.671217  0.580468 -0.223051  0.669376  0.582335 -0.229104
+varianceBlue   0.356086  0.688965 -0.570925  0.352681  0.689282 -0.576462
+maxHistBluVal  0.590637  0.550369 -0.230232  0.588520  0.551371 -0.235905
+varianceGreen -0.434317  0.094064 -0.422455 -0.436666  0.093810 -0.423250
+criMean       -0.242505 -0.223435  0.039955 -0.241133 -0.223525  0.045020
+criMax         0.456049  0.586908 -0.642427  0.452748  0.587905 -0.646793
+criMin        -0.170525 -0.680481  0.488524 -0.168090 -0.680026  0.493370
+cgreenviMean  -0.247187 -0.224355 -0.015878 -0.246469 -0.224397 -0.011487
+cgreenviMax    0.539236  0.636657 -0.547721  0.536358  0.637996 -0.552216
+cgreenviMin   -0.345921 -0.545035  0.239043 -0.345366 -0.547711  0.240758
+cnirviMean     0.121149  0.041261  0.067611  0.122140  0.041899  0.069162
+cnirviMax     -0.744674 -0.279581 -0.275331 -0.745676 -0.281261 -0.271936
+cnirviMin      0.344479 -0.185263  0.451512  0.345761 -0.185174  0.452632
+gndviMean      0.730852  0.423880  0.082988  0.730899  0.425846  0.077928
+gndviMax       0.384914  0.550185 -0.217916  0.384426  0.552912 -0.220073
+gndviMin      -0.125105 -0.472021  0.732221 -0.122359 -0.471857  0.733427
+mcariOneMean   0.893854  0.643044 -0.094562  0.891835  0.645071 -0.101681
+mcariOneMax    0.703314  0.655641 -0.243068  0.700291  0.656765 -0.250046
+mcariOneMin    0.823293  0.350783  0.178318  0.822309  0.352128  0.173380
+mtviOneMean    0.893854  0.643044 -0.094562  0.891835  0.645071 -0.101681
+mtviOneMax     0.703314  0.655641 -0.243068  0.700291  0.656765 -0.250046
+mtviOneMin     0.823293  0.350783  0.178318  0.822309  0.352128  0.173380
+ngrdiMean     -0.502605 -0.318969 -0.033587 -0.502383 -0.320227 -0.029401
+ngrdiMax      -0.097661  0.266215 -0.489411 -0.099313  0.266029 -0.488974
+ngrdiMin      -0.356455 -0.534325  0.227945 -0.355911 -0.536812  0.229950
+ndviMean       0.838174  0.458256  0.052486  0.837919  0.460516  0.047867
+ndviMax        0.607079  0.949435 -0.290260  0.604852  0.951359 -0.295983
+ndviMin        0.119629 -0.288110  1.000000  0.122747 -0.287192  0.999873
+rviMean        0.998456  0.578748  0.097107  0.998026  0.581295  0.091074
+rviMax         0.506862  0.983617 -0.297604  0.504370  0.981689 -0.303955
+rviMin         0.153748 -0.250778  0.995615  0.156566 -0.249933  0.994010
+nrviMean       1.000000  0.563116  0.119629  0.999973  0.565781  0.113936
+nrviMax        0.563116  1.000000 -0.288110  0.560757  0.999944 -0.294318
+nrviMin        0.119629 -0.288110  1.000000  0.122747 -0.287192  0.999873
+tviMean        0.999973  0.560757  0.122747  1.000000  0.563434  0.117102
+tviMax         0.565781  0.999944 -0.287192  0.563434  1.000000 -0.293384
+tviMin         0.113936 -0.294318  0.999873  0.117102 -0.293384  1.000000
+saviMean       0.999951  0.566012  0.115394  0.999884  0.568671  0.109659
+saviMax        0.568817  0.999850 -0.286880  0.566440  0.999819 -0.293131
+saviMin        0.131903 -0.281260  0.999866  0.135000 -0.280317  0.999671
+
+               saviMean   saviMax   saviMin
+yields         0.414607  0.488531 -0.384771
+volImage       0.360057  0.565286 -0.447789
+areaCalc       0.348563  0.475620 -0.302094
+areaImage      0.425907  0.599345 -0.372986
+hMeasured      0.286899  0.410777 -0.348904
+hImage         0.091275  0.236621 -0.387881
+dataIafNdvi    0.278286  0.309143 -0.846940
+maxRed         0.592163  0.645151 -0.528292
+minRed         0.432647 -0.210909  0.359281
+maxBlue        0.648555  0.665352 -0.337829
+meanRed        0.687100  0.621667 -0.233859
+minBlue        0.788235  0.302282  0.228921
+maxGreen       0.528280  0.652447 -0.566051
+meanBlue       0.835521  0.646620 -0.133729
+minGreen      -0.333175 -0.522193  0.221865
+meanGreen      0.212088  0.367093 -0.319197
+varianceRed    0.347456  0.631907 -0.475880
+maxHistGrVal   0.597036  0.554226 -0.221140
+maxHistValue   0.676225  0.584524 -0.214317
+varianceBlue   0.361861  0.690500 -0.565014
+maxHistBluVal  0.597036  0.554226 -0.221140
+varianceGreen -0.430574  0.090132 -0.431015
+criMean       -0.246370 -0.226314  0.035611
+criMax         0.460834  0.589373 -0.634571
+criMin        -0.175883 -0.676436  0.488179
+cgreenviMean  -0.248502 -0.226631 -0.018693
+cgreenviMax    0.543333  0.639880 -0.539012
+cgreenviMin   -0.347975 -0.544792  0.236156
+cnirviMean     0.118830  0.040624  0.068739
+cnirviMax     -0.745276 -0.284455 -0.286158
+cnirviMin      0.341235 -0.179990  0.460183
+gndviMean      0.731760  0.427569  0.090887
+gndviMax       0.386806  0.550360 -0.214766
+gndviMin      -0.129002 -0.472451  0.727955
+mcariOneMean   0.898061  0.649218 -0.081459
+mcariOneMax    0.707605  0.661268 -0.233115
+mcariOneMin    0.824939  0.358062  0.192624
+mtviOneMean    0.898061  0.649218 -0.081459
+mtviOneMax     0.707605  0.661268 -0.233115
+mtviOneMin     0.824939  0.358062  0.192624
+ngrdiMean     -0.504117 -0.321232 -0.038705
+ngrdiMax      -0.095321  0.265852 -0.489661
+ngrdiMin      -0.358441 -0.534425  0.225096
+ndviMean       0.838278  0.463070  0.062902
+ndviMax        0.610056  0.950172 -0.282580
+ndviMin        0.115394 -0.286880  0.999866
+rviMean        0.998709  0.584583  0.109544
+rviMax         0.509723  0.982945 -0.291430
+rviMin         0.149792 -0.249269  0.995912
+nrviMean       0.999951  0.568817  0.131903
+nrviMax        0.566012  0.999850 -0.281260
+nrviMin        0.115394 -0.286880  0.999866
+tviMean        0.999884  0.566440  0.135000
+tviMax         0.568671  0.999819 -0.280317
+tviMin         0.109659 -0.293131  0.999671
+saviMean       1.000000  0.571735  0.127712
+saviMax        0.571735  1.000000 -0.279939
+saviMin        0.127712 -0.279939  1.000000
+
+[58 rows x 58 columns]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_5_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    GRAFICAS ENTRE VARIABLES
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    LAI CALCULATED FROM EQUATION BASED ON VOLUME and AREA
+
+Se calcula el IAF usando Volumen Imagen y Yield
+
+\(IAF = 0.0134 + 2.7791 Vc\)
+
+Se calcula IAF usando Area Lateral y Yield
+
+\$IAF = -0.5786 + 0.7896 Alat \$
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{n}{StandardScaler}
+
+\PY{k+kn}{import} \PY{n+nn}{math}
+\PY{n}{areaLateral} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{volumeFromDiameter} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{diametros}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{index}\PY{p}{,}\PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{datos}\PY{o}{.}\PY{n}{datosArea}\PY{p}{)}\PY{p}{:}
+    \PY{n}{diametro} \PY{o}{=} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{x}\PY{o}{/}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{p}{)}
+    \PY{n}{diametros}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{diametro}\PY{p}{)}
+    \PY{n}{altura}\PY{o}{=} \PY{n}{datos}\PY{o}{.}\PY{n}{datosAlturaCalculada}\PY{p}{[}\PY{n}{index}\PY{p}{]}\PY{o}{/}\PY{l+m+mi}{100}
+    \PY{n}{valueAreaLateral}\PY{o}{=}\PY{n}{diametro}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{p}{(}\PY{n}{diametro}\PY{o}{*}\PY{n}{diametro}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{4}\PY{o}{*}\PY{p}{(}\PY{n}{altura}\PY{o}{*}\PY{n}{altura}\PY{p}{)}\PY{p}{)}
+    \PY{n}{valueVolume} \PY{o}{=} \PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{n}{diametro}\PY{o}{*}\PY{n}{diametro}\PY{o}{*}\PY{n}{altura}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{6}\PY{p}{)}
+    \PY{n}{volumeFromDiameter}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{valueVolume}\PY{p}{)}
+    \PY{n}{areaLateral}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{valueAreaLateral}\PY{p}{)}
+\PY{n}{IAF\PYZus{}from\PYZus{}volume} \PY{o}{=} \PY{n}{definirCorrelacionVariables}\PY{o}{.}\PY{n}{objective}\PY{p}{(}\PY{n}{datos}\PY{o}{.}\PY{n}{datosVolumenImagen}\PY{p}{,} \PY{l+m+mf}{2.7791}\PY{p}{,}\PY{l+m+mf}{0.0134}\PY{p}{)}
+\PY{n}{IAF\PYZus{}from\PYZus{}area} \PY{o}{=} \PY{n}{definirCorrelacionVariables}\PY{o}{.}\PY{n}{objective}\PY{p}{(}\PY{n}{areaLateral}\PY{p}{,} \PY{l+m+mf}{0.7896}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.5786}\PY{p}{)}
+\PY{n}{d} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{laiArea}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{n}{IAF\PYZus{}from\PYZus{}area}\PY{p}{\PYZcb{}}
+\PY{n}{dictGeneral}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{n}{d}\PY{p}{)}
+\PY{n}{dframeFinal} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{dictGeneral}\PY{p}{)}
+\PY{n}{correlation}\PY{o}{=}\PY{n}{dframeFinal}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pearson}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{scaled\PYZus{}features} \PY{o}{=} \PY{n}{StandardScaler}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{dframeFinal}\PY{o}{.}\PY{n}{values}\PY{p}{)}
+\PY{n}{scaled\PYZus{}features\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{scaled\PYZus{}features}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{dframeFinal}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{dframeFinal}\PY{o}{.}\PY{n}{columns}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+\PY{n}{my\PYZus{}pal} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanRed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanGreen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{g}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{b}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}
+\PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{dataframe}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{meanRed}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{meanGreen}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{meanBlue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,}\PY{n}{orient}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{v}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{n}{my\PYZus{}pal}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot:>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_10_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{dframeFinal}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yields}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{kurt}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{dframeFinal}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yields}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{skew}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{displot}\PY{p}{(}\PY{n}{dframeFinal}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yields}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+3.648259646881603
+1.451541527339079
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.FacetGrid at 0x26a3d2e42c8>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_12_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cols}\PY{o}{=} \PY{n}{correlation}\PY{o}{.}\PY{n}{nlargest}\PY{p}{(}\PY{l+m+mi}{35}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{index}
+\PY{n}{cm}\PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{corrcoef}\PY{p}{(}\PY{n}{dframeFinal}\PY{p}{[}\PY{n}{cols}\PY{p}{]}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{font\PYZus{}scale}\PY{o}{=}\PY{l+m+mf}{1.3}\PY{p}{)}
+\PY{n}{corr\PYZus{}mat} \PY{o}{=} \PY{n}{dframeFinal}\PY{p}{[}\PY{n}{cols}\PY{p}{]}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{stack}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{name}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{correlation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{g} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{relplot}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{corr\PYZus{}mat}\PY{p}{,}
+    \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{level\PYZus{}0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{level\PYZus{}1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{correlation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{correlation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{vlag}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue\PYZus{}norm}\PY{o}{=}\PY{p}{(}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.9}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{sizes}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{150}\PY{p}{)}\PY{p}{,} \PY{n}{size\PYZus{}norm}\PY{o}{=}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{.2}\PY{p}{,} \PY{l+m+mf}{.8}\PY{p}{)}\PY{p}{,}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Tweak the figure to finalize}
+\PY{n}{g}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{xlabel}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ylabel}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{aspect}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{equal}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{g}\PY{o}{.}\PY{n}{despine}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{g}\PY{o}{.}\PY{n}{ax}\PY{o}{.}\PY{n}{margins}\PY{p}{(}\PY{l+m+mf}{.02}\PY{p}{)}
+\PY{k}{for} \PY{n}{label} \PY{o+ow}{in} \PY{n}{g}\PY{o}{.}\PY{n}{ax}\PY{o}{.}\PY{n}{get\PYZus{}xticklabels}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{label}\PY{o}{.}\PY{n}{set\PYZus{}rotation}\PY{p}{(}\PY{l+m+mi}{90}\PY{p}{)}
+\PY{k}{for} \PY{n}{artist} \PY{o+ow}{in} \PY{n}{g}\PY{o}{.}\PY{n}{legend}\PY{o}{.}\PY{n}{legendHandles}\PY{p}{:}
+    \PY{n}{artist}\PY{o}{.}\PY{n}{set\PYZus{}edgecolor}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.7}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_13_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    GRAFICAS DE VARIANZAS DE BANDAS
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{p}{)}
+\PY{n}{colsVariance} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{varianceBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{varianceRed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{varianceGreen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsVariance}\PY{p}{]}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{,}\PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{muted}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{diag\PYZus{}kind}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_15_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{colsVariance} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{varianceBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{varianceRed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{varianceGreen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsVariance}\PY{p}{]}\PY{p}{,} \PY{n}{orient}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Set2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_16_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    GRAFICA DE NDVI
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{p}{)}
+\PY{n}{colsNdvi} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ndviMax}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ndviMean}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ndviMin}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsNdvi}\PY{p}{]}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{colsVariance} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ndviMax}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ndviMean}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ndviMin}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsVariance}\PY{p}{]}\PY{p}{,} \PY{n}{orient}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Set2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_18_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_18_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    GRAFICA DE BANDAS
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{p}{)}
+\PY{n}{colsBlue} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{minBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{maxBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsBlue}\PY{p}{]}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{colsBlue} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{minBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{maxBlue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsBlue}\PY{p}{]}\PY{p}{,} \PY{n}{orient}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Set2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_20_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{p}{)}
+\PY{n}{colsRed} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{minRed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanRed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{maxRed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsRed}\PY{p}{]}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_21_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{p}{)}
+\PY{n}{colsGreen} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{minGreen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{meanGreen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{maxGreen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsGreen}\PY{p}{]}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_22_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{font\PYZus{}scale}\PY{o}{=}\PY{l+m+mf}{1.2}\PY{p}{)}
+\PY{n}{colsGreen} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{yields}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{volImage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{maxRed}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{maxBlue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{criMax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{dataframe}\PY{p}{[}\PY{n}{colsGreen}\PY{p}{]}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{)}
+\PY{n}{pyplot}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_23_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    NORMALIZE
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{n}{MinMaxScaler}
+\PY{n}{colsRelations} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yields}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{volImage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{maxRed}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{maxBlue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{x} \PY{o}{=} \PY{n}{dataframe}\PY{p}{[}\PY{n}{colsRelations}\PY{p}{]}
+\PY{n}{min\PYZus{}max\PYZus{}scaler} \PY{o}{=} \PY{n}{MinMaxScaler}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{x\PYZus{}scaled} \PY{o}{=} \PY{n}{min\PYZus{}max\PYZus{}scaler}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{x\PYZus{}scaled}\PY{p}{)}
+\PY{n}{df}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{n}{colsRelations}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{df}\PY{p}{,}\PY{n}{height}\PY{o}{=}\PY{l+m+mf}{2.5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.PairGrid at 0x26a3faeaac8>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_25_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df}\PY{p}{,} \PY{n}{orient}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{v}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Set2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{graficas_files/graficas_26_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
